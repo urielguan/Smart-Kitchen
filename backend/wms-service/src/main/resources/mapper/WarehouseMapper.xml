@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.WarehouseMapper">
+
+    <resultMap id="WarehouseVOMap" type="com.xykj.wms.vo.WarehouseVO">
+        <id     property="id"            column="id"/>
+        <result property="warehouseCode" column="warehouse_code"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="warehouseType" column="warehouse_type"/>
+        <result property="warehouseTypeName" column="warehouse_type_name"/>
+        <result property="capacity"      column="capacity"/>
+        <result property="capacityUnit"  column="capacity_unit"/>
+        <result property="address"       column="address"/>
+        <result property="managerName"   column="manager_name"/>
+        <result property="managerPhone"  column="manager_phone"/>
+        <result property="status"        column="status"/>
+        <result property="remark"        column="remark"/>
+        <result property="version"       column="version"/>
+        <result property="positionTotal" column="position_total"/>
+        <result property="positionUsed"  column="position_used"/>
+        <result property="positionIdle"  column="position_idle"/>
+        <result property="temperatureMin" column="temperature_min"/>
+        <result property="temperatureMax" column="temperature_max"/>
+        <result property="humidityMin"    column="humidity_min"/>
+        <result property="humidityMax"    column="humidity_max"/>
+        <result property="createdAt"     column="created_at"/>
+        <result property="updatedAt"     column="updated_at"/>
+    </resultMap>
+
+    <sql id="WarehouseListQuerySql">
+        SELECT w.id, w.warehouse_code, w.warehouse_name, w.warehouse_type,
+               MAX(d.dict_name)                                       AS warehouse_type_name,
+               w.capacity, w.capacity_unit, w.address,
+               w.manager_name, w.manager_phone,
+               w.status, w.remark, w.version,
+               w.temperature_min, w.temperature_max,
+               w.humidity_min, w.humidity_max,
+               w.created_at, w.updated_at,
+               COUNT(l.id)                                              AS position_total,
+               SUM(CASE WHEN l.status = 'occupied' THEN 1 ELSE 0 END)  AS position_used,
+               SUM(CASE WHEN l.status = 'available' THEN 1 ELSE 0 END) AS position_idle
+        FROM wms_warehouse w
+        LEFT JOIN sys_dict d
+               ON d.dict_type = 'warehouse_type'
+              AND d.dict_code = w.warehouse_type
+              AND d.tenant_id = w.tenant_id
+              AND d.deleted = 0
+        LEFT JOIN wms_location l ON l.warehouse_id = w.id AND l.deleted = 0
+        WHERE w.deleted = 0
+        <if test="q.warehouseName != null and q.warehouseName != '' and (q.warehouseCode == null or q.warehouseCode == '')">
+            AND (
+                w.warehouse_name LIKE CONCAT('%', #{q.warehouseName}, '%')
+                OR w.warehouse_code LIKE CONCAT('%', #{q.warehouseName}, '%')
+            )
+        </if>
+        <if test="q.warehouseCode != null and q.warehouseCode != '' and (q.warehouseName == null or q.warehouseName == '')">
+            AND w.warehouse_code LIKE CONCAT('%', #{q.warehouseCode}, '%')
+        </if>
+        <if test="q.warehouseName != null and q.warehouseName != '' and q.warehouseCode != null and q.warehouseCode != ''">
+            AND w.warehouse_name LIKE CONCAT('%', #{q.warehouseName}, '%')
+            AND w.warehouse_code LIKE CONCAT('%', #{q.warehouseCode}, '%')
+        </if>
+        <if test="q.warehouseType != null and q.warehouseType != ''">
+            AND w.warehouse_type = #{q.warehouseType}
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND w.status = #{q.status}
+        </if>
+        <if test="q.orgId != null">
+            AND w.org_id = #{q.orgId}
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() > 0">
+            AND w.org_id IN
+            <foreach collection="q.orgIds" item="orgId" open="(" separator="," close=")">
+                #{orgId}
+            </foreach>
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() == 0">
+            AND w.id IS NULL
+        </if>
+        GROUP BY w.id
+    </sql>
+
+    <select id="selectWarehousePage" resultMap="WarehouseVOMap">
+        <include refid="WarehouseListQuerySql"/>
+        ORDER BY w.created_at DESC
+    </select>
+
+    <select id="selectWarehouseExportList" resultMap="WarehouseVOMap">
+        <include refid="WarehouseListQuerySql"/>
+        ORDER BY w.created_at DESC
+    </select>
+
+    <update id="updateWithVersion">
+        UPDATE wms_warehouse
+        SET warehouse_code = #{entity.warehouseCode},
+            warehouse_name = #{entity.warehouseName},
+            warehouse_type = #{entity.warehouseType},
+            capacity = #{entity.capacity},
+            capacity_unit = #{entity.capacityUnit},
+            address = #{entity.address},
+            manager_name = #{entity.managerName},
+            manager_phone = #{entity.managerPhone},
+            status = #{entity.status},
+            remark = #{entity.remark},
+            temperature_min = #{entity.temperatureMin},
+            temperature_max = #{entity.temperatureMax},
+            humidity_min = #{entity.humidityMin},
+            humidity_max = #{entity.humidityMax},
+            version = version + 1,
+            updated_at = NOW()
+        WHERE id = #{entity.id}
+          AND version = #{version}
+          AND deleted = 0
+    </update>
+</mapper>

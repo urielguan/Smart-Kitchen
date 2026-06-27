@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.OutboundImportTaskRowMapper">
+
+    <select id="selectByTaskId" resultType="com.xykj.wms.entity.OutboundImportTaskRow">
+        SELECT *
+        FROM wms_outbound_import_task_row
+        WHERE task_id = #{taskId}
+          AND deleted = 0
+        ORDER BY row_number ASC, id ASC
+    </select>
+
+</mapper>

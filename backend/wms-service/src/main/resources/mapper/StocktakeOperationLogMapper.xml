@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.StocktakeOperationLogMapper">
+
+    <resultMap id="StocktakeOperationLogVOMap" type="com.xykj.wms.vo.StocktakeOperationLogVO">
+        <id property="id" column="id"/>
+        <result property="stocktakeId" column="stocktake_id"/>
+        <result property="action" column="action"/>
+        <result property="actionName" column="action_name"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="operatorName" column="operator_name"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectByStocktakeId" resultMap="StocktakeOperationLogVOMap">
+        SELECT l.id, l.stocktake_id, l.action, l.action_name,
+               l.operator_id, l.operator_name, l.content, l.created_at
+        FROM wms_stocktake_operation_log l
+        INNER JOIN wms_stocktake_order o ON o.id = l.stocktake_id AND o.deleted = 0
+        WHERE l.stocktake_id = #{stocktakeId}
+        <if test="orgId != null">
+            AND o.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND o.tenant_id = #{tenantId}
+        </if>
+        ORDER BY l.created_at DESC, l.id DESC
+    </select>
+
+</mapper>

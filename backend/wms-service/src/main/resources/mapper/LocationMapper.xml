@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.LocationMapper">
+
+    <resultMap id="LocationVOMap" type="com.xykj.wms.vo.LocationVO">
+        <id     property="id"             column="id"/>
+        <result property="locationCode"   column="location_code"/>
+        <result property="locationName"   column="location_name"/>
+        <result property="locationType"   column="location_type"/>
+        <result property="regionCode"     column="region_code"/>
+        <result property="shelfCode"      column="shelf_code"/>
+        <result property="slotCode"       column="slot_code"/>
+        <result property="warehouseId"    column="warehouse_id"/>
+        <result property="capacity"       column="capacity"/>
+        <result property="capacityUnit"   column="capacity_unit"/>
+        <result property="usedCapacity"   column="used_capacity"/>
+        <result property="temperatureMin" column="temperature_min"/>
+        <result property="temperatureMax" column="temperature_max"/>
+        <result property="humidityMin"    column="humidity_min"/>
+        <result property="humidityMax"    column="humidity_max"/>
+        <result property="sensorDeviceId" column="sensor_device_id"/>
+        <result property="materialTypes"  column="material_types"/>
+        <result property="status"         column="status"/>
+        <result property="remark"         column="remark"/>
+        <result property="createdAt"      column="created_at"/>
+        <result property="updatedAt"      column="updated_at"/>
+        <result property="version"        column="version"/>
+    </resultMap>
+
+    <select id="selectLocationPage" resultMap="LocationVOMap">
+        SELECT id, location_code, location_name,
+               location_type, region_code, shelf_code, slot_code,
+               warehouse_id, capacity, capacity_unit, used_capacity,
+               temperature_min, temperature_max,
+               humidity_min, humidity_max,
+               sensor_device_id,
+               material_types, status, remark,
+               created_at, updated_at, version
+        FROM wms_location
+        WHERE deleted = 0
+          AND warehouse_id = #{q.warehouseId}
+        <if test="q.keyword != null and q.keyword != ''">
+            AND (location_code LIKE CONCAT('%', #{q.keyword}, '%')
+              OR location_name  LIKE CONCAT('%', #{q.keyword}, '%'))
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND status = #{q.status}
+        </if>
+        ORDER BY created_at DESC
+    </select>
+    <select id="selectLocationExportList" resultMap="LocationVOMap">
+        SELECT l.id, l.location_code, l.location_name,
+               l.location_type, l.region_code, l.shelf_code, l.slot_code,
+               l.warehouse_id, l.capacity, l.capacity_unit, l.used_capacity,
+               l.temperature_min, l.temperature_max,
+               l.humidity_min, l.humidity_max,
+               l.material_types, l.status, l.remark,
+               l.created_at, l.updated_at, l.version
+        FROM wms_location l
+        INNER JOIN wms_warehouse w ON w.id = l.warehouse_id AND w.deleted = 0
+        WHERE l.deleted = 0
+        <if test="q.keyword != null and q.keyword != ''">
+            AND (l.location_code LIKE CONCAT('%', #{q.keyword}, '%')
+              OR l.location_name LIKE CONCAT('%', #{q.keyword}, '%'))
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND l.status = #{q.status}
+        </if>
+        <if test="q.warehouseId != null">
+            AND l.warehouse_id = #{q.warehouseId}
+        </if>
+        <if test="q.warehouseName != null and q.warehouseName != ''">
+            AND w.warehouse_name LIKE CONCAT('%', #{q.warehouseName}, '%')
+        </if>
+        <if test="q.warehouseType != null and q.warehouseType != ''">
+            AND w.warehouse_type = #{q.warehouseType}
+        </if>
+        <if test="q.orgId != null">
+            AND w.org_id = #{q.orgId}
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() > 0">
+            AND w.org_id IN
+            <foreach collection="q.orgIds" item="orgId" open="(" separator="," close=")">
+                #{orgId}
+            </foreach>
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() == 0">
+            AND w.id IS NULL
+        </if>
+        ORDER BY l.created_at DESC
+    </select>
+
+    <select id="selectByIdForUpdate" resultType="com.xykj.wms.entity.Location">
+        SELECT *
+        FROM wms_location
+        WHERE id = #{locationId}
+          AND deleted = 0
+        FOR UPDATE
+    </select>
+
+    <update id="updateWithVersion">
+        UPDATE wms_location
+        SET location_code = #{location.locationCode},
+            location_name = #{location.locationName},
+            location_type = #{location.locationType},
+            region_code = #{location.regionCode},
+            shelf_code = #{location.shelfCode},
+            slot_code = #{location.slotCode},
+            warehouse_id = #{location.warehouseId},
+            capacity = #{location.capacity},
+            capacity_unit = #{location.capacityUnit},
+            used_capacity = #{location.usedCapacity},
+            temperature_min = #{location.temperatureMin},
+            temperature_max = #{location.temperatureMax},
+            humidity_min = #{location.humidityMin},
+            humidity_max = #{location.humidityMax},
+            sensor_device_id = #{location.sensorDeviceId},
+            material_types = #{location.materialTypes},
+            status = #{location.status},
+            remark = #{location.remark},
+            updated_by = #{location.updatedBy},
+            updated_at = #{location.updatedAt},
+            version = version + 1
+        WHERE id = #{location.id}
+          AND version = #{version}
+          AND deleted = 0
+    </update>
+
+    <update id="replaceUsedCapacity">
+        UPDATE wms_location
+        SET used_capacity = #{usedCapacity},
+            updated_at = NOW()
+        WHERE id = #{locationId}
+          AND deleted = 0
+    </update>
+</mapper>

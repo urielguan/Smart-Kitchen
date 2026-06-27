@@ -1,0 +1,43 @@
+$primary-color: #ff7a00;
+$primary-dark: #d85f00;
+$success-color: #2fb36d;
+$warning-color: #ffb020;
+$danger-color: #ef4444;
+$info-color: #64748b;
+
+$text-primary: #0f172a;
+$text-regular: #334155;
+$text-secondary: #64748b;
+$text-placeholder: #94a3b8;
+$text-on-dark: #f8fafc;
+
+$border-base: #d7dee8;
+$border-light: #e2e8f0;
+$border-lighter: #edf2f7;
+
+$bg-base: #f4f6f8;
+$bg-panel: #ffffff;
+$bg-dark: #111827;
+$bg-dark-soft: #1f2937;
+$bg-warning: #fff7e6;
+$bg-danger: #fff1f2;
+
+$border-radius-base: 8px;
+$border-radius-large: 16px;
+$border-radius-xl: 24px;
+
+$box-shadow-base: 0 12px 32px rgba(15, 23, 42, 0.08);
+$box-shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.05);
+
+@mixin touch-button {
+  min-height: 56px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: $border-radius-large;
+}
+
+@mixin panel-card {
+  background: $bg-panel;
+  border-radius: $border-radius-large;
+  box-shadow: $box-shadow-base;
+}

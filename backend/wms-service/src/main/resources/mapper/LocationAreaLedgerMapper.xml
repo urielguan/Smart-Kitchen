@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.LocationAreaLedgerMapper">
+
+    <resultMap id="LocationAreaLedgerMap" type="com.xykj.wms.entity.LocationAreaLedger">
+        <id property="id" column="id"/>
+        <result property="bizType" column="biz_type"/>
+        <result property="bizAction" column="biz_action"/>
+        <result property="bizOrderId" column="biz_order_id"/>
+        <result property="bizItemId" column="biz_item_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="locationId" column="location_id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="effectiveQuantity" column="effective_quantity"/>
+        <result property="areaCoefficientSnapshot" column="area_coefficient_snapshot"/>
+        <result property="areaDelta" column="area_delta"/>
+        <result property="direction" column="direction"/>
+        <result property="validationMode" column="validation_mode"/>
+        <result property="skipReason" column="skip_reason"/>
+        <result property="reversedLedgerId" column="reversed_ledger_id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="remark" column="remark"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedBy" column="updated_by"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deleted" column="deleted"/>
+    </resultMap>
+
+    <select id="selectLatestByBizItemForUpdate" resultMap="LocationAreaLedgerMap">
+        SELECT id, biz_type, biz_action, biz_order_id, biz_item_id,
+               warehouse_id, location_id, material_id,
+               effective_quantity, area_coefficient_snapshot, area_delta,
+               direction, validation_mode, skip_reason, reversed_ledger_id,
+               org_id, tenant_id, remark,
+               created_by, created_at, updated_by, updated_at, deleted
+        FROM wms_location_area_ledger
+        WHERE biz_type = #{bizType}
+          AND biz_action = #{bizAction}
+          AND biz_order_id = #{bizOrderId}
+          AND biz_item_id = #{bizItemId}
+          AND deleted = 0
+        ORDER BY id DESC
+        LIMIT 1
+        FOR UPDATE
+    </select>
+
+    <select id="selectActiveByLocationAndMaterial" resultMap="LocationAreaLedgerMap">
+        SELECT id, biz_type, biz_action, biz_order_id, biz_item_id,
+               warehouse_id, location_id, material_id,
+               effective_quantity, area_coefficient_snapshot, area_delta,
+               direction, validation_mode, skip_reason, reversed_ledger_id,
+               org_id, tenant_id, remark,
+               created_by, created_at, updated_by, updated_at, deleted
+        FROM wms_location_area_ledger
+        WHERE location_id = #{locationId}
+          AND material_id = #{materialId}
+          AND reversed_ledger_id IS NULL
+          AND deleted = 0
+        ORDER BY id ASC
+    </select>
+
+    <update id="markReversed">
+        UPDATE wms_location_area_ledger
+        SET reversed_ledger_id = #{reversedLedgerId},
+            updated_at = NOW()
+        WHERE id = #{ledgerId}
+          AND deleted = 0
+    </update>
+
+    <update id="deleteActiveByLocationAndMaterial">
+        UPDATE wms_location_area_ledger
+        SET deleted = 1,
+            updated_at = NOW()
+        WHERE location_id = #{locationId}
+          AND material_id = #{materialId}
+          AND deleted = 0
+    </update>
+
+    <update id="deleteByBizActionAndLocations">
+        UPDATE wms_location_area_ledger
+        SET deleted = 1,
+            updated_at = NOW()
+        WHERE biz_action = #{bizAction}
+          AND location_id IN
+          <foreach collection="locationIds" item="locationId" open="(" separator="," close=")">
+              #{locationId}
+          </foreach>
+          AND deleted = 0
+    </update>
+</mapper>

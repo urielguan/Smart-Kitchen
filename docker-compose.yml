@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: kitchen-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Root@123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-smart_kitchen}
+      MYSQL_USER: ${MYSQL_USER:-kitchen}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-Kitchen@123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./backend/src/main/resources/db:/docker-entrypoint-initdb.d:ro
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - kitchen-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: kitchen-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - kitchen-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nacos 服务注册与配置中心
+  nacos:
+    image: nacos/nacos-server:v2.3.2
+    platform: linux/amd64
+    container_name: kitchen-nacos
+    restart: always
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_DB_NAME: ${MYSQL_DATABASE:-nacos_config}
+      MYSQL_SERVICE_USER: ${MYSQL_USER:-kitchen}
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_PASSWORD:-Kitchen@123}
+      JVM_XMS: 256m
+      JVM_XMX: 512m
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    volumes:
+      - nacos-logs:/home/nacos/logs
+    networks:
+      - kitchen-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # 后端服务 - auth-service
+  auth-service:
+    build:
+      context: ./backend
+      dockerfile: auth-service/Dockerfile
+    container_name: kitchen-auth-service
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-smart_kitchen}
+      MYSQL_USERNAME: ${MYSQL_USER:-kitchen}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-Kitchen@123}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "8081:8081"
+    networks:
+      - kitchen-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nacos:
+        condition: service_started
+
+  # 后端服务 - sys-service
+  sys-service:
+    build:
+      context: ./backend
+      dockerfile: sys-service/Dockerfile
+    container_name: kitchen-sys-service
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-smart_kitchen}
+      MYSQL_USERNAME: ${MYSQL_USER:-kitchen}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-Kitchen@123}
+    ports:
+      - "8089:8089"
+    networks:
+      - kitchen-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # 前端 - Web管理后台
+  web-admin:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kitchen-web-admin
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - kitchen-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - sys-service
+
+volumes:
+  mysql-data:
+  redis-data:
+  nacos-logs:
+
+networks:
+  kitchen-network:
+    driver: bridge

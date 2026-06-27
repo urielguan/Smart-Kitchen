@@ -1,0 +1,37 @@
+# Maven build output
+**/target/
+
+# Claude Code
+CLAUDE.md
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Config files
+*.yml
+*.yaml
+bootstrap.yml.example
+
+# Upload directory
+upload
+
+# Local tooling/config
+.claude/
+
+# Local environment scripts/installers
+find-jdk.ps1
+uninstall-jdk.ps1
+jdk21.msi
+
+# Log files
+*.log
+*.png
+screenlog.0
+nohup.out
+.run-logs/
+
+# Local windows helper scripts
+*.bat
+*.txt

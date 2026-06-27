@@ -1,0 +1,40 @@
+.runtime/
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Java / Maven
+target/
+*.class
+
+# Local env / IDE
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/
+
+# Logs / temp
+*.log
+logs/
+tmp/
+temp/
+
+# Python / YOLO sidecar local envs
+.venv/
+venv/
+__pycache__/
+
+# Local archives / exports
+*.zip
+*.tar
+*.tar.gz
+
+# Nested git backups
+.git_backup/
+**/.git_backup/
+
+# Large dataset JSON files in doc
+doc/*.json

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.OutboundOrderMapper">
+
+    <resultMap id="OutboundOrderVOMap" type="com.xykj.wms.vo.OutboundOrderVO">
+        <id     property="id"            column="id"/>
+        <result property="outboundNo"    column="outbound_no"/>
+        <result property="outboundType"  column="outbound_type"/>
+        <result property="warehouseId"   column="warehouse_id"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="requesterId"   column="requester_id"/>
+        <result property="requesterName" column="requester_name"/>
+        <result property="targetOrgId"   column="target_org_id"/>
+        <result property="targetOrgName" column="target_org_name"/>
+        <result property="purpose"       column="purpose"/>
+        <result property="sourceOrderId" column="source_order_id"/>
+        <result property="sourceOrderNo" column="source_order_no"/>
+        <result property="totalAmount"   column="total_amount"/>
+        <result property="remark"        column="remark"/>
+        <result property="attachments"   column="attachments" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="status"        column="status"/>
+        <result property="submittedAt"   column="submitted_at"/>
+        <result property="submittedBy"   column="submitted_by"/>
+        <result property="submitterName" column="submitter_name"/>
+        <result property="approvedAt"    column="approved_at"/>
+        <result property="approvedBy"    column="approved_by"/>
+        <result property="completedAt"   column="completed_at"/>
+        <result property="approverName"  column="approver_name"/>
+        <result property="approveRemark" column="approve_remark"/>
+        <result property="orgId"         column="org_id"/>
+        <result property="orgName"       column="org_name"/>
+        <result property="createdAt"     column="created_at"/>
+        <result property="updatedAt"     column="updated_at"/>
+        <result property="itemCount"     column="item_count"/>
+        <result property="totalQuantity" column="total_quantity"/>
+        <result property="warehouseNames" column="warehouse_names"/>
+    </resultMap>
+
+    <select id="selectOutboundPage" resultMap="OutboundOrderVOMap">
+        SELECT o.id, o.outbound_no, o.outbound_type,
+               o.warehouse_id, w.warehouse_name,
+               o.requester_id, u.real_name AS requester_name,
+               o.target_org_id, torg.org_name AS target_org_name, o.purpose, o.source_order_id, o.source_order_no,
+               o.total_amount, o.remark, o.attachments, o.status,
+               o.submitted_at, o.submitted_by, COALESCE(sub.real_name, sub.username) AS submitter_name,
+               o.approved_at, o.approved_by, o.completed_at, COALESCE(apr.real_name, apr.username) AS approver_name, o.approve_remark,
+               o.org_id, org.org_name,
+               o.created_at, o.updated_at,
+               COUNT(i.id) AS item_count,
+               COALESCE(SUM(i.quantity), 0) AS total_quantity,
+               (SELECT GROUP_CONCAT(DISTINCT w2.warehouse_name SEPARATOR '、')
+                FROM wms_outbound_order_item i2
+                LEFT JOIN wms_warehouse w2 ON w2.id = i2.warehouse_id AND w2.deleted = 0
+                WHERE i2.outbound_id = o.id
+               ) AS warehouse_names
+        FROM wms_outbound_order o
+        LEFT JOIN wms_outbound_order_item i ON i.outbound_id = o.id
+        LEFT JOIN wms_warehouse w ON w.id = o.warehouse_id AND w.deleted = 0
+        LEFT JOIN auth_user u ON u.id = o.requester_id
+        LEFT JOIN auth_user sub ON sub.id = o.submitted_by
+        LEFT JOIN auth_user apr ON apr.id = o.approved_by
+        LEFT JOIN sys_organization org ON org.id = o.org_id AND org.deleted = 0
+        LEFT JOIN sys_organization torg ON torg.id = o.target_org_id AND torg.deleted = 0
+        WHERE o.deleted = 0
+        <if test="q.outboundNo != null and q.outboundNo != ''">
+            AND o.outbound_no LIKE CONCAT('%', #{q.outboundNo}, '%')
+        </if>
+        <if test="q.outboundType != null and q.outboundType != ''">
+            AND o.outbound_type = #{q.outboundType}
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND o.status = #{q.status}
+        </if>
+        <if test="q.warehouseId != null">
+            AND o.warehouse_id = #{q.warehouseId}
+        </if>
+        <if test="q.orgId != null">
+            AND o.org_id = #{q.orgId}
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() > 0">
+            AND o.org_id IN
+            <foreach collection="q.orgIds" item="oid" open="(" separator="," close=")">
+                #{oid}
+            </foreach>
+        </if>
+        <if test="q.startDate != null and q.startDate != ''">
+            AND DATE(o.created_at) &gt;= #{q.startDate}
+        </if>
+        <if test="q.endDate != null and q.endDate != ''">
+            AND DATE(o.created_at) &lt;= #{q.endDate}
+        </if>
+        GROUP BY o.id
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="selectOutboundExportRows" resultMap="OutboundOrderVOMap">
+        SELECT o.id, o.outbound_no, o.outbound_type,
+               o.warehouse_id, w.warehouse_name,
+               o.requester_id, u.real_name AS requester_name,
+               o.target_org_id, torg.org_name AS target_org_name, o.purpose, o.source_order_id, o.source_order_no,
+               o.total_amount, o.remark, o.attachments, o.status,
+               o.submitted_at, o.submitted_by, COALESCE(sub.real_name, sub.username) AS submitter_name,
+               o.approved_at, o.approved_by, o.completed_at, COALESCE(apr.real_name, apr.username) AS approver_name, o.approve_remark,
+               o.org_id, org.org_name,
+               o.created_at, o.updated_at,
+               COUNT(i.id) AS item_count,
+               COALESCE(SUM(i.quantity), 0) AS total_quantity,
+               (SELECT GROUP_CONCAT(DISTINCT w2.warehouse_name SEPARATOR '、')
+                FROM wms_outbound_order_item i2
+                LEFT JOIN wms_warehouse w2 ON w2.id = i2.warehouse_id AND w2.deleted = 0
+                WHERE i2.outbound_id = o.id
+               ) AS warehouse_names
+        FROM wms_outbound_order o
+        LEFT JOIN wms_outbound_order_item i ON i.outbound_id = o.id
+        LEFT JOIN wms_warehouse w ON w.id = o.warehouse_id AND w.deleted = 0
+        LEFT JOIN auth_user u ON u.id = o.requester_id
+        LEFT JOIN auth_user sub ON sub.id = o.submitted_by
+        LEFT JOIN auth_user apr ON apr.id = o.approved_by
+        LEFT JOIN sys_organization org ON org.id = o.org_id AND org.deleted = 0
+        LEFT JOIN sys_organization torg ON torg.id = o.target_org_id AND torg.deleted = 0
+        WHERE o.deleted = 0
+        <if test="q.outboundNo != null and q.outboundNo != ''">
+            AND o.outbound_no LIKE CONCAT('%', #{q.outboundNo}, '%')
+        </if>
+        <if test="q.outboundType != null and q.outboundType != ''">
+            AND o.outbound_type = #{q.outboundType}
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND o.status = #{q.status}
+        </if>
+        <if test="q.warehouseId != null">
+            AND o.warehouse_id = #{q.warehouseId}
+        </if>
+        <if test="q.orgId != null">
+            AND o.org_id = #{q.orgId}
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() > 0">
+            AND o.org_id IN
+            <foreach collection="q.orgIds" item="oid" open="(" separator="," close=")">
+                #{oid}
+            </foreach>
+        </if>
+        <if test="q.startDate != null and q.startDate != ''">
+            AND DATE(o.created_at) &gt;= #{q.startDate}
+        </if>
+        <if test="q.endDate != null and q.endDate != ''">
+            AND DATE(o.created_at) &lt;= #{q.endDate}
+        </if>
+        GROUP BY o.id
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="selectOutboundDetail" resultMap="OutboundOrderVOMap">
+        SELECT o.id, o.outbound_no, o.outbound_type,
+               o.warehouse_id, w.warehouse_name,
+               o.requester_id, u.real_name AS requester_name,
+               o.target_org_id, torg.org_name AS target_org_name, o.purpose, o.source_order_id, o.source_order_no,
+               o.total_amount, o.remark, o.attachments, o.status,
+               o.submitted_at, o.submitted_by, COALESCE(sub.real_name, sub.username) AS submitter_name,
+               o.approved_at, o.approved_by, o.completed_at, COALESCE(apr.real_name, apr.username) AS approver_name, o.approve_remark,
+               o.org_id, org.org_name,
+               o.created_at, o.updated_at,
+               (SELECT COALESCE(SUM(i2.quantity), 0) FROM wms_outbound_order_item i2 WHERE i2.outbound_id = o.id) AS total_quantity
+        FROM wms_outbound_order o
+        LEFT JOIN wms_warehouse w ON w.id = o.warehouse_id AND w.deleted = 0
+        LEFT JOIN auth_user u ON u.id = o.requester_id
+        LEFT JOIN auth_user sub ON sub.id = o.submitted_by
+        LEFT JOIN auth_user apr ON apr.id = o.approved_by
+        LEFT JOIN sys_organization org ON org.id = o.org_id AND org.deleted = 0
+        LEFT JOIN sys_organization torg ON torg.id = o.target_org_id AND torg.deleted = 0
+        WHERE o.id = #{id} AND o.deleted = 0
+    </select>
+
+    <select id="existsWarehouseOutboundOccupancy" resultType="java.lang.Boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM wms_outbound_order o
+            WHERE o.deleted = 0
+              AND o.warehouse_id = #{warehouseId}
+              AND o.status IN
+              <foreach collection="statuses" item="status" open="(" separator="," close=")">
+                  #{status}
+              </foreach>
+        )
+    </select>
+
+    <select id="existsWarehouseOutboundHistory" resultType="java.lang.Boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM wms_outbound_order o
+            WHERE o.warehouse_id = #{warehouseId}
+        )
+    </select>
+
+</mapper>

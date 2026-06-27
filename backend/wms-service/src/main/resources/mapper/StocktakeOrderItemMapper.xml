@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.StocktakeOrderItemMapper">
+
+    <resultMap id="StocktakeOrderItemVOMap" type="com.xykj.wms.vo.StocktakeOrderItemVO">
+        <id property="id" column="id"/>
+        <result property="stocktakeId" column="stocktake_id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="materialName" column="material_name"/>
+        <result property="spec" column="spec"/>
+        <result property="unit" column="unit"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="locationId" column="location_id"/>
+        <result property="locationName" column="location_name"/>
+        <result property="batchNo" column="batch_no"/>
+        <result property="inventoryId" column="inventory_id"/>
+        <result property="expiryDate" column="expiry_date"/>
+        <result property="systemQty" column="system_qty"/>
+        <result property="actualQty" column="actual_qty"/>
+        <result property="diffQty" column="diff_qty"/>
+        <result property="unitCost" column="unit_cost"/>
+        <result property="diffAmount" column="diff_amount"/>
+        <result property="diffType" column="diff_type"/>
+        <result property="diffDirection" column="diff_direction"/>
+        <result property="diffReason" column="diff_reason"/>
+        <result property="recognitionSource" column="recognition_source"/>
+        <result property="aiConfidence" column="ai_confidence"/>
+        <result property="remark" column="remark"/>
+        <result property="lineRemark" column="line_remark"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="selectByStocktakeId" resultMap="StocktakeOrderItemVOMap">
+        SELECT i.id, i.stocktake_id, i.material_id, i.material_name, i.spec, i.unit,
+               i.warehouse_id, w.warehouse_name, i.location_id, l.location_name,
+               i.batch_no, i.inventory_id, i.expiry_date,
+               i.system_qty, i.actual_qty, i.diff_qty,
+               i.unit_cost, i.diff_amount, i.diff_type, i.diff_direction,
+               i.diff_reason, i.recognition_source, i.ai_confidence,
+               i.remark, i.line_remark, i.created_at, i.updated_at
+        FROM wms_stocktake_order_item i
+        INNER JOIN wms_stocktake_order o ON o.id = i.stocktake_id AND o.deleted = 0
+        LEFT JOIN wms_warehouse w ON w.id = i.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = i.location_id
+        WHERE i.stocktake_id = #{stocktakeId}
+        <if test="orgId != null">
+            AND o.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND o.tenant_id = #{tenantId}
+        </if>
+        ORDER BY i.id
+    </select>
+
+    <select id="selectVersionItems" resultMap="StocktakeOrderItemVOMap">
+        SELECT iv.id, iv.stocktake_id, iv.material_id, iv.material_name, iv.spec, iv.unit,
+               iv.warehouse_id, w.warehouse_name, iv.location_id, l.location_name,
+               iv.batch_no, iv.inventory_id, iv.expiry_date,
+               iv.system_qty, iv.actual_qty, iv.diff_qty,
+               iv.unit_cost, iv.diff_amount, iv.diff_type, iv.diff_direction,
+               iv.diff_reason, iv.recognition_source, iv.ai_confidence,
+               iv.remark, iv.line_remark, iv.created_at, iv.updated_at
+        FROM wms_stocktake_order_item_version iv
+        INNER JOIN wms_stocktake_order_version v ON v.id = iv.stocktake_version_id
+        LEFT JOIN wms_warehouse w ON w.id = iv.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = iv.location_id
+        WHERE iv.stocktake_id = #{stocktakeId}
+          AND iv.version_no = #{versionNo}
+        <if test="orgId != null">
+            AND v.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND v.tenant_id = #{tenantId}
+        </if>
+        ORDER BY iv.id
+    </select>
+
+    <delete id="deleteByStocktakeId">
+        DELETE FROM wms_stocktake_order_item WHERE stocktake_id = #{stocktakeId}
+    </delete>
+
+
+    <select id="existsWarehouseStocktakeItemOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order_item i
+            WHERE i.warehouse_id = #{warehouseId}
+              AND EXISTS (
+                    SELECT 1
+                    FROM wms_stocktake_order o
+                    WHERE o.id = i.stocktake_id
+                      AND o.deleted = 0
+                      AND o.status IN
+                      <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+              )
+        )
+    </select>
+
+    <select id="existsWarehouseStocktakeItemHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order_item
+            WHERE warehouse_id = #{warehouseId}
+        )
+    </select>
+
+    <select id="existsLocationStocktakeItemOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order_item i
+            WHERE i.location_id = #{locationId}
+              AND EXISTS (
+                    SELECT 1
+                    FROM wms_stocktake_order o
+                    WHERE o.id = i.stocktake_id
+                      AND o.deleted = 0
+                      AND o.status IN
+                      <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+              )
+        )
+    </select>
+
+    <select id="existsLocationStocktakeItemHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order_item
+            WHERE location_id = #{locationId}
+        )
+    </select>
+
+</mapper>

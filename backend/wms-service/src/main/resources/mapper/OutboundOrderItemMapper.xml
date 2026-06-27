@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.OutboundOrderItemMapper">
+
+    <resultMap id="OutboundOrderItemVOMap" type="com.xykj.wms.vo.OutboundOrderItemVO">
+        <id     property="id"             column="id"/>
+        <result property="outboundId"     column="outbound_id"/>
+        <result property="materialId"     column="material_id"/>
+        <result property="materialName"   column="material_name"/>
+        <result property="spec"           column="spec"/>
+        <result property="unit"           column="unit"/>
+        <result property="warehouseId"    column="warehouse_id"/>
+        <result property="warehouseName"  column="warehouse_name"/>
+        <result property="locationId"     column="location_id"/>
+        <result property="locationName"   column="location_name"/>
+        <result property="batchNo"        column="batch_no"/>
+        <result property="availableStock" column="available_stock"/>
+        <result property="quantity"       column="quantity"/>
+        <result property="unitCost"       column="unit_cost"/>
+        <result property="totalCost"      column="total_cost"/>
+        <result property="purpose"        column="purpose"/>
+        <result property="remark"         column="remark"/>
+    </resultMap>
+
+    <select id="selectByOutboundId" resultMap="OutboundOrderItemVOMap">
+        SELECT i.id, i.outbound_id, i.material_id, i.material_name, i.spec, i.unit,
+               i.warehouse_id, i.location_id, i.quantity, i.unit_cost, i.total_cost,
+               i.batch_no, i.inventory_id, i.expiry_date, i.purpose, i.remark,
+               w.warehouse_name, l.location_name
+        FROM wms_outbound_order_item i
+        LEFT JOIN wms_warehouse w ON w.id = i.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = i.location_id
+        WHERE i.outbound_id = #{outboundId}
+        ORDER BY i.id
+    </select>
+
+    <delete id="deleteByOutboundId">
+        DELETE FROM wms_outbound_order_item WHERE outbound_id = #{outboundId}
+    </delete>
+
+
+    <select id="existsWarehouseOutboundItemOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_outbound_order_item i
+            WHERE i.warehouse_id = #{warehouseId}
+              AND EXISTS (
+                    SELECT 1
+                    FROM wms_outbound_order o
+                    WHERE o.id = i.outbound_id
+                      AND o.deleted = 0
+                      AND o.status IN
+                      <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+              )
+        )
+    </select>
+
+    <select id="existsWarehouseOutboundItemHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_outbound_order_item
+            WHERE warehouse_id = #{warehouseId}
+        )
+    </select>
+
+    <select id="existsLocationOutboundOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_outbound_order_item i
+            WHERE i.location_id = #{locationId}
+              AND EXISTS (
+                    SELECT 1
+                    FROM wms_outbound_order o
+                    WHERE o.id = i.outbound_id
+                      AND o.deleted = 0
+                      AND o.status IN
+                      <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+              )
+        )
+    </select>
+
+    <select id="existsLocationOutboundHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_outbound_order_item
+            WHERE location_id = #{locationId}
+        )
+    </select>
+
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.yingzi.ollama-openai-proxy</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-lc</string>
+      <string>cd "__ROOT_DIR__" &amp;&amp; ./scripts/dev/start-local-ai.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>__ROOT_DIR__/.runtime/logs/launchd-local-ai.log</string>
+    <key>StandardErrorPath</key>
+    <string>__ROOT_DIR__/.runtime/logs/launchd-local-ai.log</string>
+    <key>WorkingDirectory</key>
+    <string>__ROOT_DIR__</string>
+  </dict>
+</plist>

@@ -1,0 +1,59 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  color: $text-primary;
+  background: $bg-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.45);
+  border-radius: 999px;
+}
+
+.app-shell {
+  min-height: 100%;
+}
+
+.page-container {
+  padding: 20px;
+}
+
+.panel-card {
+  @include panel-card;
+}
+
+.touch-primary-button {
+  @include touch-button;
+  background: $primary-color;
+  border-color: $primary-color;
+}
+
+.touch-secondary-button {
+  @include touch-button;
+}

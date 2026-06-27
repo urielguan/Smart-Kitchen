@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.recipe.mapper.RecipePlanAdjustmentMapper">
+
+    <!-- 分页查询调整申请列表 -->
+    <select id="selectPageByCondition" resultType="com.xykj.recipe.entity.RecipePlanAdjustment">
+        SELECT
+            a.id,
+            a.plan_id,
+            a.adjust_reason,
+            a.adjust_type,
+            a.before_data,
+            a.after_data,
+            a.status,
+            a.applied_by,
+            a.applied_at,
+            a.audited_by,
+            a.audited_at,
+            a.audit_remark,
+            a.org_id,
+            a.tenant_id,
+            a.created_at,
+            a.updated_at,
+            a.deleted,
+            p.plan_code,
+            p.plan_date
+        FROM recipe_plan_adjustment a
+        LEFT JOIN recipe_plan p ON a.plan_id = p.id
+        WHERE a.deleted = 0
+        <if test="planId != null">
+            AND a.plan_id = #{planId}
+        </if>
+        <if test="status != null and status != ''">
+            AND a.status = #{status}
+        </if>
+        ORDER BY a.created_at DESC
+    </select>
+
+    <!-- 查询调整申请详情（含计划信息） -->
+    <select id="selectDetailWithPlanById" resultType="com.xykj.recipe.entity.RecipePlanAdjustment">
+        SELECT
+            a.id,
+            a.plan_id,
+            a.adjust_reason,
+            a.adjust_type,
+            a.before_data,
+            a.after_data,
+            a.status,
+            a.applied_by,
+            a.applied_at,
+            a.audited_by,
+            a.audited_at,
+            a.audit_remark,
+            a.org_id,
+            a.tenant_id,
+            a.created_at,
+            a.updated_at,
+            a.deleted,
+            p.plan_code,
+            p.plan_date
+        FROM recipe_plan_adjustment a
+        LEFT JOIN recipe_plan p ON a.plan_id = p.id
+        WHERE a.id = #{id} AND a.deleted = 0
+    </select>
+
+</mapper>

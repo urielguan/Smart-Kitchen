@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.InboundOrderItemMapper">
+
+    <resultMap id="InboundOrderItemVOMap" type="com.xykj.wms.vo.InboundOrderItemVO">
+        <id     property="id"             column="id"/>
+        <result property="inboundId"      column="inbound_id"/>
+        <result property="warehouseId"     column="warehouse_id"/>
+        <result property="warehouseName"   column="warehouse_name"/>
+        <result property="materialId"     column="material_id"/>
+        <result property="materialName"   column="material_name"/>
+        <result property="spec"           column="spec"/>
+        <result property="unit"           column="unit"/>
+        <result property="locationId"     column="location_id"/>
+        <result property="locationName"   column="location_name"/>
+        <result property="quantity"       column="quantity"/>
+        <result property="unitCost"       column="unit_cost"/>
+        <result property="totalCost"      column="total_cost"/>
+        <result property="batchNo"        column="batch_no"/>
+        <result property="productionDate" column="production_date"/>
+        <result property="expiryDate"     column="expiry_date"/>
+    </resultMap>
+
+    <select id="selectItemsByInboundId" resultMap="InboundOrderItemVOMap">
+        SELECT i.id, i.inbound_id, i.warehouse_id, w.warehouse_name,
+               i.material_id, i.material_name, i.spec, i.unit,
+               i.location_id, l.location_name,
+               i.quantity, i.unit_cost, i.total_cost,
+               i.batch_no, i.production_date, i.expiry_date
+        FROM wms_inbound_order_item i
+        LEFT JOIN wms_warehouse w ON w.id = i.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = i.location_id AND l.deleted = 0
+        WHERE i.inbound_id = #{inboundId}
+        ORDER BY i.id ASC
+    </select>
+
+    <select id="selectEntityItemsByInboundId" resultType="com.xykj.wms.entity.InboundOrderItem">
+        SELECT id, inbound_id, warehouse_id, material_id, material_name, spec, unit,
+               location_id, quantity, unit_cost, total_cost, batch_no,
+               production_date, expiry_date, trace_batch_id, created_at, updated_at
+        FROM wms_inbound_order_item
+        WHERE inbound_id = #{inboundId}
+        ORDER BY id ASC
+    </select>
+
+
+    <select id="existsWarehouseInboundItemOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_inbound_order_item i
+            WHERE i.warehouse_id = #{warehouseId}
+              AND EXISTS (
+                    SELECT 1
+                    FROM wms_inbound_order o
+                    WHERE o.id = i.inbound_id
+                      AND o.deleted = 0
+                      AND o.status IN
+                      <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+              )
+        )
+    </select>
+
+    <select id="existsWarehouseInboundItemHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_inbound_order_item
+            WHERE warehouse_id = #{warehouseId}
+        )
+    </select>
+
+    <select id="existsLocationInboundOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_inbound_order_item i
+            WHERE i.location_id = #{locationId}
+              AND EXISTS (
+                    SELECT 1
+                    FROM wms_inbound_order o
+                    WHERE o.id = i.inbound_id
+                      AND o.deleted = 0
+                      AND o.status IN
+                      <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+              )
+        )
+    </select>
+
+    <select id="existsLocationInboundHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_inbound_order_item
+            WHERE location_id = #{locationId}
+        )
+    </select>
+
+</mapper>

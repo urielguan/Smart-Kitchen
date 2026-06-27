@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.StocktakeOrderMapper">
+
+    <resultMap id="StocktakeOrderListVOMap" type="com.xykj.wms.vo.StocktakeOrderListVO">
+        <id property="id" column="id"/>
+        <result property="stocktakeNo" column="stocktake_no"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="locationId" column="location_id"/>
+        <result property="locationName" column="location_name"/>
+        <result property="warehouseNames" column="warehouse_names"/>
+        <result property="locationNames" column="location_names"/>
+        <result property="stocktakeType" column="stocktake_type"/>
+        <result property="stocktakeDate" column="stocktake_date"/>
+        <result property="startAt" column="start_at"/>
+        <result property="endAt" column="end_at"/>
+        <result property="checkerId" column="checker_id"/>
+        <result property="checkerName" column="checker_name"/>
+        <result property="itemCount" column="item_count"/>
+        <result property="diffQtyTotal" column="diff_qty_total"/>
+        <result property="profitAmountTotal" column="profit_amount_total"/>
+        <result property="lossAmountTotal" column="loss_amount_total"/>
+        <result property="diffRate" column="diff_rate"/>
+        <result property="status" column="status"/>
+        <result property="versionNo" column="version_no"/>
+        <result property="orgId" column="org_id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="approvedAt" column="approved_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="StocktakeOrderDetailVOMap" type="com.xykj.wms.vo.StocktakeOrderDetailVO">
+        <id property="id" column="id"/>
+        <result property="stocktakeNo" column="stocktake_no"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="locationId" column="location_id"/>
+        <result property="locationName" column="location_name"/>
+        <result property="warehouseNames" column="warehouse_names"/>
+        <result property="locationNames" column="location_names"/>
+        <result property="stocktakeType" column="stocktake_type"/>
+        <result property="stocktakeDate" column="stocktake_date"/>
+        <result property="startAt" column="start_at"/>
+        <result property="endAt" column="end_at"/>
+        <result property="checkerId" column="checker_id"/>
+        <result property="checkerName" column="checker_name"/>
+        <result property="itemCount" column="item_count"/>
+        <result property="diffQtyTotal" column="diff_qty_total"/>
+        <result property="profitAmountTotal" column="profit_amount_total"/>
+        <result property="lossAmountTotal" column="loss_amount_total"/>
+        <result property="diffRate" column="diff_rate"/>
+        <result property="surplusQty" column="surplus_qty"/>
+        <result property="deficitQty" column="deficit_qty"/>
+        <result property="surplusAmount" column="surplus_amount"/>
+        <result property="deficitAmount" column="deficit_amount"/>
+        <result property="remark" column="remark"/>
+        <result property="attachments" column="attachments" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="status" column="status"/>
+        <result property="approvedBy" column="approved_by"/>
+        <result property="approverName" column="approver_name"/>
+        <result property="approvedAt" column="approved_at"/>
+        <result property="approveRemark" column="approve_remark"/>
+        <result property="rejectRemark" column="reject_remark"/>
+        <result property="voidReason" column="void_reason"/>
+        <result property="versionNo" column="version_no"/>
+        <result property="orgId" column="org_id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="creatorName" column="creator_name"/>
+        <result property="updatedBy" column="updated_by"/>
+        <result property="updaterName" column="updater_name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="StocktakeVersionSummaryVOMap" type="com.xykj.wms.vo.StocktakeVersionSummaryVO">
+        <id property="id" column="id"/>
+        <result property="stocktakeId" column="stocktake_id"/>
+        <result property="versionNo" column="version_no"/>
+        <result property="status" column="status"/>
+        <result property="itemCount" column="item_count"/>
+        <result property="diffQtyTotal" column="diff_qty_total"/>
+        <result property="profitAmountTotal" column="profit_amount_total"/>
+        <result property="lossAmountTotal" column="loss_amount_total"/>
+        <result property="submittedBy" column="submitted_by"/>
+        <result property="submitterName" column="submitter_name"/>
+        <result property="submittedAt" column="submitted_at"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="StocktakeVersionDetailVOMap" type="com.xykj.wms.vo.StocktakeVersionDetailVO">
+        <id property="id" column="id"/>
+        <result property="stocktakeId" column="stocktake_id"/>
+        <result property="versionNo" column="version_no"/>
+        <result property="stocktakeNo" column="stocktake_no"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="locationId" column="location_id"/>
+        <result property="locationName" column="location_name"/>
+        <result property="stocktakeType" column="stocktake_type"/>
+        <result property="stocktakeDate" column="stocktake_date"/>
+        <result property="startAt" column="start_at"/>
+        <result property="endAt" column="end_at"/>
+        <result property="checkerId" column="checker_id"/>
+        <result property="checkerName" column="checker_name"/>
+        <result property="itemCount" column="item_count"/>
+        <result property="diffQtyTotal" column="diff_qty_total"/>
+        <result property="profitAmountTotal" column="profit_amount_total"/>
+        <result property="lossAmountTotal" column="loss_amount_total"/>
+        <result property="diffRate" column="diff_rate"/>
+        <result property="surplusQty" column="surplus_qty"/>
+        <result property="deficitQty" column="deficit_qty"/>
+        <result property="surplusAmount" column="surplus_amount"/>
+        <result property="deficitAmount" column="deficit_amount"/>
+        <result property="remark" column="remark"/>
+        <result property="attachments" column="attachments" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="status" column="status"/>
+        <result property="approvedBy" column="approved_by"/>
+        <result property="approverName" column="approver_name"/>
+        <result property="approvedAt" column="approved_at"/>
+        <result property="approveRemark" column="approve_remark"/>
+        <result property="rejectRemark" column="reject_remark"/>
+        <result property="voidReason" column="void_reason"/>
+        <result property="orgId" column="org_id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="submittedBy" column="submitted_by"/>
+        <result property="submitterName" column="submitter_name"/>
+        <result property="submittedAt" column="submitted_at"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="creatorName" column="creator_name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="StocktakeStatisticsVOMap" type="com.xykj.wms.vo.StocktakeStatisticsVO">
+        <result property="thisMonthCount" column="this_month_count"/>
+        <result property="pendingCount" column="pending_count"/>
+        <result property="profitAmountTotal" column="profit_amount_total"/>
+        <result property="lossAmountTotal" column="loss_amount_total"/>
+    </resultMap>
+
+    <select id="selectStocktakePage" resultMap="StocktakeOrderListVOMap">
+        SELECT o.id, o.stocktake_no, o.warehouse_id, w.warehouse_name,
+               o.location_id, l.location_name,
+               (SELECT GROUP_CONCAT(w2.warehouse_name SEPARATOR ',') FROM wms_warehouse w2
+                WHERE JSON_CONTAINS(IFNULL(o.warehouse_ids, JSON_ARRAY(o.warehouse_id)), CAST(w2.id AS CHAR)) AND w2.deleted = 0) AS warehouse_names,
+               (SELECT GROUP_CONCAT(l2.location_name SEPARATOR ',') FROM wms_location l2
+                WHERE JSON_CONTAINS(IFNULL(o.location_ids, JSON_ARRAY(o.location_id)), CAST(l2.id AS CHAR))) AS location_names,
+               o.stocktake_type, o.stocktake_date,
+               o.start_at, o.end_at, o.checker_id, o.checker_name,
+               o.item_count, o.diff_qty_total, o.profit_amount_total, o.loss_amount_total,
+               o.diff_rate, o.status, o.version_no, o.org_id, o.tenant_id,
+               o.approved_at, o.created_at, o.updated_at
+        FROM wms_stocktake_order o
+        LEFT JOIN wms_warehouse w ON w.id = o.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = o.location_id
+        WHERE o.deleted = 0
+        <if test="q.stocktakeNo != null and q.stocktakeNo != ''">
+            AND o.stocktake_no LIKE CONCAT('%', #{q.stocktakeNo}, '%')
+        </if>
+        <if test="q.startDate != null">
+            AND o.stocktake_date &gt;= #{q.startDate}
+        </if>
+        <if test="q.endDate != null">
+            AND o.stocktake_date &lt;= #{q.endDate}
+        </if>
+        <if test="q.warehouseId != null">
+            AND o.warehouse_id = #{q.warehouseId}
+        </if>
+        <if test="q.locationId != null">
+            AND o.location_id = #{q.locationId}
+        </if>
+        <if test="q.status != null and q.status != ''">
+            AND o.status = #{q.status}
+        </if>
+        <if test="q.checkerId != null">
+            AND o.checker_id = #{q.checkerId}
+        </if>
+        <if test="q.checkerName != null and q.checkerName != ''">
+            AND o.checker_name LIKE CONCAT('%', #{q.checkerName}, '%')
+        </if>
+        <if test="q.orgId != null">
+            AND o.org_id = #{q.orgId}
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() > 0">
+            AND o.org_id IN
+            <foreach collection="q.orgIds" item="oid" open="(" separator="," close=")">
+                #{oid}
+            </foreach>
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() == 0">
+            AND 1 = 0
+        </if>
+        <if test="q.tenantId != null">
+            AND o.tenant_id = #{q.tenantId}
+        </if>
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="selectStocktakeDetail" resultMap="StocktakeOrderDetailVOMap">
+        SELECT o.id, o.stocktake_no, o.warehouse_id, w.warehouse_name,
+               o.location_id, l.location_name,
+               (SELECT GROUP_CONCAT(w2.warehouse_name SEPARATOR ',') FROM wms_warehouse w2
+                WHERE JSON_CONTAINS(IFNULL(o.warehouse_ids, JSON_ARRAY(o.warehouse_id)), CAST(w2.id AS CHAR)) AND w2.deleted = 0) AS warehouse_names,
+               (SELECT GROUP_CONCAT(l2.location_name SEPARATOR ',') FROM wms_location l2
+                WHERE JSON_CONTAINS(IFNULL(o.location_ids, JSON_ARRAY(o.location_id)), CAST(l2.id AS CHAR))) AS location_names,
+               o.stocktake_type, o.stocktake_date,
+               o.start_at, o.end_at, o.checker_id, o.checker_name,
+               o.item_count, o.diff_qty_total, o.profit_amount_total, o.loss_amount_total,
+               o.diff_rate, o.surplus_qty, o.deficit_qty, o.surplus_amount, o.deficit_amount,
+               o.remark, o.attachments, o.status, o.approved_by, au.real_name AS approver_name,
+               o.approved_at, o.approve_remark, o.reject_remark, o.void_reason,
+               o.version_no, o.org_id, o.tenant_id,
+               o.created_by, cu.real_name AS creator_name, o.updated_by, uu.real_name AS updater_name,
+               o.created_at, o.updated_at
+        FROM wms_stocktake_order o
+        LEFT JOIN wms_warehouse w ON w.id = o.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = o.location_id
+        LEFT JOIN auth_user au ON au.id = o.approved_by
+        LEFT JOIN auth_user cu ON cu.id = o.created_by
+        LEFT JOIN auth_user uu ON uu.id = o.updated_by
+        WHERE o.id = #{id} AND o.deleted = 0
+        <if test="orgId != null">
+            AND o.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND o.tenant_id = #{tenantId}
+        </if>
+    </select>
+
+    <select id="selectVersionSummaryList" resultMap="StocktakeVersionSummaryVOMap">
+        SELECT v.id, v.stocktake_id, v.version_no, v.status,
+               v.item_count, v.diff_qty_total, v.profit_amount_total, v.loss_amount_total,
+               v.submitted_by, u.real_name AS submitter_name, v.submitted_at, v.created_at
+        FROM wms_stocktake_order_version v
+        LEFT JOIN auth_user u ON u.id = v.submitted_by
+        WHERE v.stocktake_id = #{stocktakeId}
+        <if test="orgId != null">
+            AND v.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND v.tenant_id = #{tenantId}
+        </if>
+        ORDER BY v.version_no DESC, v.created_at DESC
+    </select>
+
+    <select id="selectVersionDetail" resultMap="StocktakeVersionDetailVOMap">
+        SELECT v.id, v.stocktake_id, v.version_no, v.stocktake_no,
+               v.warehouse_id, w.warehouse_name, v.location_id, l.location_name,
+               v.stocktake_type, v.stocktake_date, v.start_at, v.end_at,
+               v.checker_id, v.checker_name, v.item_count, v.diff_qty_total,
+               v.profit_amount_total, v.loss_amount_total, v.diff_rate,
+               v.surplus_qty, v.deficit_qty, v.surplus_amount, v.deficit_amount,
+               v.remark, v.attachments, v.status, v.approved_by, au.real_name AS approver_name,
+               v.approved_at, v.approve_remark, v.reject_remark, v.void_reason,
+               v.org_id, v.tenant_id, v.submitted_by, su.real_name AS submitter_name,
+               v.submitted_at, v.created_by, cu.real_name AS creator_name,
+               v.created_at, v.updated_at
+        FROM wms_stocktake_order_version v
+        LEFT JOIN wms_warehouse w ON w.id = v.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = v.location_id
+        LEFT JOIN auth_user au ON au.id = v.approved_by
+        LEFT JOIN auth_user su ON su.id = v.submitted_by
+        LEFT JOIN auth_user cu ON cu.id = v.created_by
+        WHERE v.stocktake_id = #{stocktakeId}
+          AND v.version_no = #{versionNo}
+        <if test="orgId != null">
+            AND v.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND v.tenant_id = #{tenantId}
+        </if>
+    </select>
+
+    <select id="countActiveRange" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM wms_stocktake_order o
+        WHERE o.deleted = 0
+          AND o.status IN ('draft', 'pending')
+          AND (
+              o.warehouse_id = #{warehouseId}
+              OR JSON_CONTAINS(IFNULL(o.warehouse_ids, JSON_ARRAY(o.warehouse_id)), CAST(#{warehouseId} AS CHAR))
+          )
+        <if test="excludeId != null">
+            AND o.id &lt;&gt; #{excludeId}
+        </if>
+        <if test="orgId != null">
+            AND o.org_id = #{orgId}
+        </if>
+        <if test="tenantId != null">
+            AND o.tenant_id = #{tenantId}
+        </if>
+        <choose>
+            <when test="locationId == null">
+                AND (
+                    o.location_id IS NULL
+                    OR o.location_id IS NOT NULL
+                )
+            </when>
+            <otherwise>
+                AND (
+                    o.location_id IS NULL
+                    OR o.location_id = #{locationId}
+                    OR JSON_CONTAINS(IFNULL(o.location_ids, '[]'), CAST(#{locationId} AS CHAR))
+                )
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectStatistics" resultMap="StocktakeStatisticsVOMap">
+        SELECT
+            COALESCE(SUM(CASE
+                WHEN o.stocktake_date &gt;= #{monthStart}
+                 AND o.stocktake_date &lt; #{nextMonthStart}
+                 AND o.status IN ('pending', 'rejected', 'completed')
+                THEN 1 ELSE 0 END), 0) AS this_month_count,
+            COALESCE(SUM(CASE
+                WHEN o.status = 'pending'
+                THEN 1 ELSE 0 END), 0) AS pending_count,
+            COALESCE(SUM(CASE
+                WHEN o.stocktake_date &gt;= #{monthStart}
+                 AND o.stocktake_date &lt; #{nextMonthStart}
+                 AND o.status = 'completed'
+                THEN o.profit_amount_total ELSE 0 END), 0) AS profit_amount_total,
+            COALESCE(SUM(CASE
+                WHEN o.stocktake_date &gt;= #{monthStart}
+                 AND o.stocktake_date &lt; #{nextMonthStart}
+                 AND o.status = 'completed'
+                THEN o.loss_amount_total ELSE 0 END), 0) AS loss_amount_total
+        FROM wms_stocktake_order o
+        WHERE o.deleted = 0
+        <if test="q.orgId != null">
+            AND o.org_id = #{q.orgId}
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() > 0">
+            AND o.org_id IN
+            <foreach collection="q.orgIds" item="oid" open="(" separator="," close=")">
+                #{oid}
+            </foreach>
+        </if>
+        <if test="q.orgId == null and q.orgIds != null and q.orgIds.size() == 0">
+            AND 1 = 0
+        </if>
+        <if test="q.tenantId != null">
+            AND o.tenant_id = #{q.tenantId}
+        </if>
+    </select>
+
+
+    <select id="existsWarehouseStocktakeOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order
+            WHERE deleted = 0
+              AND warehouse_id = #{warehouseId}
+              AND status IN
+              <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+        )
+    </select>
+
+    <select id="existsWarehouseStocktakeHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order
+            WHERE warehouse_id = #{warehouseId}
+        )
+    </select>
+
+    <select id="existsLocationStocktakeHeaderOccupancy" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order
+            WHERE deleted = 0
+              AND location_id = #{locationId}
+              AND status IN
+              <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+        )
+    </select>
+
+    <select id="existsLocationStocktakeHeaderHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM wms_stocktake_order
+            WHERE location_id = #{locationId}
+        )
+    </select>
+
+</mapper>

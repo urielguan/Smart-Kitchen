@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.OutboundImportTaskMapper">
+
+    <select id="selectByTaskNo" resultType="com.xykj.wms.entity.OutboundImportTask">
+        SELECT *
+        FROM wms_outbound_import_task
+        WHERE task_no = #{taskNo}
+          AND deleted = 0
+        LIMIT 1
+    </select>
+
+</mapper>

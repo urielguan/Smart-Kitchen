@@ -1,0 +1,30 @@
+node_modules
+src/mock
+dist
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Playwright
+playwright.config.ts
+tests/
+test-results/
+playwright-report/
+e2e-screenshots
+e2e-test-employee.mjs
+*.test.js
+*.test.ts
+
+# Docker
+Dockerfile
+
+
+# Local run logs
+.run-logs/
+
+# Images (except frontend-image/)
+# src/assets/images/*.png
+# src/assets/images/*.jpg
+# src/assets/images/*.jpeg
+# src/assets/images/*.svg

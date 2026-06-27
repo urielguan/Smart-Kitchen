@@ -1,0 +1,113 @@
+// KDS Dark Theme Variables
+// Applied when .kds-dark class is present on root element
+
+$kds-bg: #0c0e12;
+$kds-surface: #141820;
+$kds-surface-2: #1a1f2a;
+$kds-surface-3: #222836;
+$kds-border: #2a2e38;
+$kds-border-light: #343a48;
+
+$kds-text: #e8eaed;
+$kds-text-dim: #8b8f96;
+$kds-text-bright: #ffffff;
+$kds-text-muted: #5a5f6b;
+
+$kds-amber: #fbbf24;
+$kds-amber-dim: rgba(251, 191, 36, 0.15);
+$kds-amber-border: rgba(251, 191, 36, 0.4);
+$kds-green: #34d399;
+$kds-green-dim: rgba(52, 211, 153, 0.15);
+$kds-green-border: rgba(52, 211, 153, 0.4);
+$kds-indigo: #818cf8;
+$kds-indigo-dim: rgba(129, 140, 248, 0.15);
+$kds-indigo-border: rgba(129, 140, 248, 0.4);
+$kds-red: #f87171;
+$kds-red-dim: rgba(248, 113, 113, 0.15);
+$kds-red-border: rgba(248, 113, 113, 0.4);
+
+$kds-font-xs: 12px;
+$kds-font-sm: 13px;
+$kds-font-base: 14px;
+$kds-font-md: 16px;
+$kds-font-lg: 18px;
+$kds-font-xl: 20px;
+$kds-font-2xl: 24px;
+$kds-font-3xl: 30px;
+
+$kds-radius-sm: 6px;
+$kds-radius-md: 8px;
+$kds-radius-lg: 12px;
+$kds-radius-xl: 16px;
+
+$kds-touch-min: 56px;
+$kds-button-min: 64px;
+
+@mixin kds-panel {
+  background: $kds-surface;
+  border: 1px solid $kds-border;
+  border-radius: $kds-radius-lg;
+}
+
+@mixin kds-touch-button {
+  min-height: $kds-touch-min;
+  font-size: $kds-font-lg;
+  font-weight: 600;
+  border-radius: $kds-radius-md;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+
+  &:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+}
+
+@mixin kds-card {
+  background: $kds-surface;
+  border: 1px solid $kds-border;
+  border-radius: $kds-radius-md;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: $kds-surface-2;
+    border-color: $kds-border-light;
+  }
+
+  &.active {
+    background: $kds-surface-2;
+    border-color: $kds-amber;
+  }
+}
+
+@mixin kds-scrollable {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $kds-border transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $kds-border;
+    border-radius: 2px;
+  }
+}
+
+@keyframes kds-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes kds-glow-red {
+  0%, 100% { box-shadow: 0 0 4px rgba(248, 113, 113, 0.3); }
+  50% { box-shadow: 0 0 12px rgba(248, 113, 113, 0.6); }
+}

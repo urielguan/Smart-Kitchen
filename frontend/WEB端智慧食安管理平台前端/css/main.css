@@ -1,0 +1,719 @@
+/* ============================================================
+   智慧厨房管理平台 - 主样式文件
+   文件: css/main.css
+   说明: 包含全局布局、组件样式（侧边栏/顶栏/表格/弹窗/表单/Toast等）
+   ============================================================ */
+
+/* ---------- 全局重置 ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f5f7fa;
+    overflow: hidden;
+}
+
+/* ---------- 总布局容器 ---------- */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* ============================================================
+   侧边栏
+   ============================================================ */
+.sidebar {
+    width: 220px;
+    background: #1a2332;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.menu-group {
+    margin-bottom: 20px;
+}
+
+.menu-group-title {
+    padding: 10px 20px;
+    font-size: 12px;
+    color: #8a93a0;
+    text-transform: uppercase;
+}
+
+.nav-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #c0c4cc;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.nav-item.active {
+    background: #409eff;
+    color: #fff;
+}
+
+/* 徽标（红色数字角标） */
+.nav-badge {
+    background: #f56c6c;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+/* ============================================================
+   主内容区
+   ============================================================ */
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---------- 顶部导航栏 ---------- */
+.header {
+    height: 56px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #606266;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #409eff;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+/* ---------- 内容滚动区 ---------- */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* ============================================================
+   统计卡片
+   ============================================================ */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card-title {
+    font-size: 14px;
+    color: #909399;
+    margin-bottom: 10px;
+}
+
+.stat-card-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #303133;
+}
+
+/* ============================================================
+   工具栏（搜索区）
+   ============================================================ */
+.toolbar {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.toolbar-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.toolbar-row input,
+.toolbar-row select {
+    padding: 8px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.toolbar-row input:focus,
+.toolbar-row select:focus {
+    border-color: #409eff;
+}
+
+.toolbar-row input {
+    width: 200px;
+}
+
+.toolbar-row select {
+    width: 150px;
+}
+
+/* ---------- 通用按钮 ---------- */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #409eff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #66b1ff;
+}
+
+.btn-default {
+    background: #fff;
+    color: #606266;
+    border: 1px solid #dcdfe6;
+}
+
+.btn-default:hover {
+    color: #409eff;
+    border-color: #409eff;
+}
+
+/* 工具栏右侧新增按钮自动推到右边 */
+.toolbar-right {
+    margin-left: auto;
+}
+
+/* ============================================================
+   数据表格
+   ============================================================ */
+.table-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f5f7fa;
+}
+
+th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #606266;
+    font-size: 14px;
+    border-bottom: 1px solid #ebeef5;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ebeef5;
+    font-size: 14px;
+    color: #606266;
+}
+
+tbody tr:hover {
+    background: #f5f7fa;
+}
+
+/* 即将过期行：轻微黄色警告背景 */
+tbody tr.warning-row {
+    background: #fffbe6;
+}
+
+/* 已过期行：轻微红色警告背景 */
+tbody tr.danger-row {
+    background: #fef0f0;
+}
+
+/* ============================================================
+   状态标签（Tag）
+   ============================================================ */
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.tag-success {
+    background: #f0f9ff;
+    color: #67c23a;
+    border: 1px solid #c2e7b0;
+}
+
+.tag-warning {
+    background: #fdf6ec;
+    color: #e6a23c;
+    border: 1px solid #f5dab1;
+}
+
+.tag-danger {
+    background: #fef0f0;
+    color: #f56c6c;
+    border: 1px solid #fbc4c4;
+}
+
+.tag-info {
+    background: #f4f4f5;
+    color: #909399;
+    border: 1px solid #d3d4d6;
+}
+
+.tag-primary {
+    background: #ecf5ff;
+    color: #409eff;
+    border: 1px solid #b3d8ff;
+}
+
+/* ============================================================
+   表格内操作按钮
+   ============================================================ */
+.action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+/* 文字链接风格按钮 */
+.btn-link {
+    color: #409eff;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+}
+
+.btn-link:hover {
+    color: #66b1ff;
+}
+
+.btn-link.danger {
+    color: #f56c6c;
+}
+
+.btn-link.danger:hover {
+    color: #f78989;
+}
+
+/* ============================================================
+   分页
+   ============================================================ */
+.pagination {
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ============================================================
+   弹窗（Modal）
+   ============================================================ */
+
+/* 遮罩层 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* 弹窗主体（position:relative 确保在 overlay flex 布局中正确居中） */
+.modal {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #ebeef5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #303133;
+}
+
+.modal-close {
+    cursor: pointer;
+    font-size: 20px;
+    color: #909399;
+}
+
+.modal-close:hover {
+    color: #606266;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #ebeef5;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ============================================================
+   表单
+   ============================================================ */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 跨两列 */
+.form-item.span-2 {
+    grid-column: span 2;
+}
+
+.form-label {
+    font-size: 14px;
+    color: #606266;
+    margin-bottom: 8px;
+}
+
+/* 必填星号 */
+.form-label.required::before {
+    content: '*';
+    color: #f56c6c;
+    margin-right: 4px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 8px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #409eff;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* 只读输入框（如自动生成单号） */
+.form-input[readonly] {
+    background: #f5f7fa;
+    cursor: not-allowed;
+}
+
+/* AI建议小按钮 */
+.ai-suggest-btn {
+    margin-left: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #e6f7ff;
+    color: #1890ff;
+    border: 1px solid #91d5ff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ai-suggest-btn:hover {
+    background: #bae7ff;
+}
+
+/* ============================================================
+   Toast 全局提示
+   ============================================================ */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #67c23a;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    display: none;
+    animation: slideInRight 0.3s;
+}
+
+.toast.show {
+    display: block;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ============================================================
+   占位页面（未开发模块）
+   ============================================================ */
+.placeholder-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #909399;
+}
+
+.placeholder-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.placeholder-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.placeholder-desc {
+    font-size: 14px;
+}
+
+/* ============================================================
+   子标签页（Tab）
+   ============================================================ */
+.tabs {
+    display: flex;
+    gap: 30px;
+    border-bottom: 2px solid #e4e7ed;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 0 20px;
+    border-radius: 8px 8px 0 0;
+}
+
+.tab-item {
+    padding: 15px 0;
+    cursor: pointer;
+    color: #606266;
+    font-size: 14px;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.tab-item:hover {
+    color: #409eff;
+}
+
+.tab-item.active {
+    color: #409eff;
+}
+
+/* 激活下划线 */
+.tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #409eff;
+}
+
+/* ============================================================
+   物料 emoji 图片占位
+   ============================================================ */
+.material-img {
+    font-size: 24px;
+}
+
+/* ============================================================
+   动态可增删明细表格
+   ============================================================ */
+.dynamic-table {
+    margin: 20px 0;
+}
+
+.dynamic-table table {
+    width: 100%;
+}
+
+.add-row-btn {
+    margin-top: 10px;
+}
+
+/* ============================================================
+   AI 悬浮提示框
+   ============================================================ */
+.ai-tooltip {
+    position: fixed;
+    background: #fff;
+    border: 1px solid #409eff;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1500;
+    max-width: 300px;
+    font-size: 13px;
+    color: #606266;
+    display: none;
+}
+
+.ai-tooltip.show {
+    display: block;
+}
+
+/* 顶部"💡 AI建议"标题 */
+.ai-tooltip::before {
+    content: '💡 AI建议';
+    display: block;
+    color: #409eff;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* ============================================================
+   仓库/仓位详情弹窗样式
+   ============================================================ */
+.detail-section {
+    margin-bottom: 20px;
+}
+
+.detail-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303133;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ebeef5;
+    margin-bottom: 12px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #909399;
+}
+
+.detail-value {
+    font-size: 14px;
+    color: #303133;
+    word-break: break-all;
+}

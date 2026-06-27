@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.wms.mapper.OutboundOrderAllocationMapper">
+
+    <resultMap id="OutboundOrderAllocationVOMap" type="com.xykj.wms.vo.OutboundOrderAllocationVO">
+        <id property="id" column="id"/>
+        <result property="outboundId" column="outbound_id"/>
+        <result property="outboundItemId" column="outbound_item_id"/>
+        <result property="sourceStockDetailId" column="source_stock_detail_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="warehouseName" column="warehouse_name"/>
+        <result property="locationId" column="location_id"/>
+        <result property="locationName" column="location_name"/>
+        <result property="batchNo" column="batch_no"/>
+        <result property="productionDate" column="production_date"/>
+        <result property="expiryDate" column="expiry_date"/>
+        <result property="quantity" column="quantity"/>
+        <result property="sourceType" column="source_type"/>
+    </resultMap>
+
+    <select id="selectByOutboundId" resultMap="OutboundOrderAllocationVOMap">
+        SELECT a.id,
+               a.outbound_id,
+               a.outbound_item_id,
+               a.source_stock_detail_id,
+               a.warehouse_id,
+               a.location_id,
+               a.batch_no,
+               a.production_date,
+               a.expiry_date,
+               a.quantity,
+               a.source_type,
+               w.warehouse_name,
+               l.location_name
+        FROM wms_outbound_order_allocation a
+        LEFT JOIN wms_warehouse w ON w.id = a.warehouse_id AND w.deleted = 0
+        LEFT JOIN wms_location l ON l.id = a.location_id AND l.deleted = 0
+        WHERE a.outbound_id = #{outboundId}
+        ORDER BY a.outbound_item_id ASC, a.id ASC
+    </select>
+
+    <delete id="deleteByOutboundId">
+        DELETE FROM wms_outbound_order_allocation WHERE outbound_id = #{outboundId}
+    </delete>
+
+</mapper>

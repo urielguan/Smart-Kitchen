@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xykj.auth.mapper.AuthUserMapper">
+
+    <select id="selectByUsername" resultType="com.xykj.auth.entity.AuthUser">
+        SELECT * FROM auth_user
+        WHERE username = #{username} AND deleted = 0
+        LIMIT 1
+    </select>
+
+    <select id="selectOrgNameById" resultType="java.lang.String">
+        SELECT org_name FROM sys_organization
+        WHERE id = #{orgId} AND deleted = 0
+        LIMIT 1
+    </select>
+
+    <update id="updateEmployeeByUserId">
+        UPDATE sys_employee
+        SET email = #{email},
+            phone = #{phone},
+            gender = #{gender},
+            avatar_url = #{avatarUrl},
+            updated_by = #{updatedBy},
+            updated_at = NOW()
+        WHERE user_id = #{userId} AND deleted = 0
+    </update>
+
+</mapper>
