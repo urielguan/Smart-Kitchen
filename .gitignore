@@ -37,4 +37,6 @@ __pycache__/
 **/.git_backup/
 
 # Large dataset JSON files in doc
-doc/*.json
+doc/FoodData_Central_branded_food_json_2026-04-30.json
+doc/FoodData_Central_sr_legacy_food_json_2018-04.json
+doc/surveyDownload.json
